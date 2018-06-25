@@ -162,7 +162,7 @@
         var stateset = obj._parents[0].stateset;
         if (stateset && stateset._textureAttributeArrayList) {
             stateset._textureAttributeArrayList.forEach(function(arr) {
-                if (arr[0]&& arr[0]._object) {
+                if (arr && arr[0]&& arr[0]._object) {
                     var object = arr[0]._object;
                     var image = object._texture && object._texture._image
                     if (image && image._url) {
@@ -247,5 +247,3 @@
         };
     }, true);
 })();
-
-
