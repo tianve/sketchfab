@@ -3,7 +3,7 @@
 // @version      0.1
 // @description  download sketchfab models
 // @author       tianye
-// @include      /^https?://(www\.)?sketchfab\.com/models/.*
+// @include      /^https?://(www\.)?sketchfab\.com/.*
 // @run-at       document-start
 // @grant        unsafeWindow
 // ==/UserScript==
