@@ -239,7 +239,7 @@
         }
         console.log("[UserScript]load script: " + src);
 
-        if (src.indexOf("web/dist/viewer") >= 0) {
+        if (src.indexOf("web/dist/viewer") >= 0 || src.indexOf("standaloneViewer") >= 0) {
             e.preventDefault();
             e.stopPropagation();
 
