@@ -203,7 +203,7 @@
                 obj:parseobj(obj),
                 tex:parsetex(obj),
             }
-
+            console.log(mdl);
             dosavefile(mdl);
         })
     }
@@ -239,7 +239,9 @@
         }
         console.log("[UserScript]load script: " + src);
 
-        if (src.indexOf("web/dist/viewer") >= 0 || src.indexOf("standaloneViewer") >= 0) {
+        //try patch all web/dist/**.js
+        //because of a hash path is used for viewer.js 
+        if (src.indexOf("web/dist/") >= 0 || src.indexOf("standaloneViewer") >= 0) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -249,8 +251,10 @@
 
             var jstext = req.responseText;
             if (jstext.indexOf("drawImplementation:function(e){var t=e.getLastProgramApplied()") >= 0) {
+                console.log("inject1:" + src);
                 jstext = jstext.split("drawImplementation:function(e){var t=e.getLastProgramApplied()").join("drawImplementation:function(e){window.drawhook(this);var t=e.getLastProgramApplied()");
-            } else {
+            } else if (jstext.indexOf("drawImplementation: function(state) {") >= 0) {
+                console.log("inject2:" + src);
                 jstext = jstext.split("drawImplementation: function(state) {").join("drawImplementation: function(state) { window.drawhook(this);");
             }
 
@@ -259,7 +263,7 @@
             obj.text = jstext;
             document.getElementsByTagName('head')[0].appendChild(obj);
 
-            console.log("[UserScript]Injection: viewer.js patched");
+            //console.log("[UserScript]Injection: viewer.js patched");
         };
     }, true);
 })();
