@@ -29,12 +29,29 @@
         link.click();
         console.log("[UserScript]savestring", filename);
     }
+    
+    const downLoadByLink = (url, filename) =>{
+        //如果提供filename，则filename需要包含扩展名
+        var link,
+            evt;
 
+        link = document.createElement('a');
+        link.href = url;
+        filename && link.setAttribute('download', filename);
+        if(document.fireEvent) {
+            window.open(link.href);
+        }else {
+            evt = document.createEvent('MouseEvents');
+            evt.initEvent('click', true, true);
+            link.dispatchEvent(evt);
+        }
+    };
+    
     var saveimagecache = {};
     var saveimage = function(filename, url) {
         if (!saveimagecache[url]) {
             saveimagecache[url] = true;
-
+            /*
             var link = document.createElement('a');
             link.download = filename;
             link.innerHTML = 'Download File';
@@ -44,8 +61,20 @@
                 document.body.removeChild(e.target);
             };
             document.body.appendChild(link);
-
             link.click();
+            */
+            let img = new Image();
+            img.setAttribute('crossOrigin', 'anonymous')
+            img.src = url;
+            img.onload = function(data) {
+                let canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                let context = canvas.getContext('2d');
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                let url = canvas.toDataURL('image/jpeg');
+                downLoadByLink(url,filename);
+            }
         }
         console.log("[UserScript]saveimage", filename);
     }
