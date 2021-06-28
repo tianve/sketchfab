@@ -239,8 +239,6 @@
         }
         console.log("[UserScript]load script: " + src);
 
-        //try patch all web/dist/**.js
-        //because of a hash path is used for viewer.js 
         if (src.indexOf("web/dist/") >= 0 || src.indexOf("standaloneViewer") >= 0) {
             e.preventDefault();
             e.stopPropagation();
@@ -256,7 +254,11 @@
             } else if (jstext.indexOf("drawImplementation: function(state) {") >= 0) {
                 console.log("inject2:" + src);
                 jstext = jstext.split("drawImplementation: function(state) {").join("drawImplementation: function(state) { window.drawhook(this);");
+            } else if (jstext.indexOf("drawGeometry:function(t){var e=t.getLastProgramApplied()") >= 0) {
+                console.log("inject3:" + src);
+                jstext = jstext.split("drawGeometry:function(t){var e=t.getLastProgramApplied()").join("drawGeometry:function(t){window.drawhook(this._geometry);var e=t.getLastProgramApplied()");
             }
+
 
             var obj = document.createElement('script');
             obj.type = "text/javascript";
