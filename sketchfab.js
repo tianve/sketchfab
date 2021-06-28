@@ -237,8 +237,10 @@
         if((""+src).length == 0) {
             return;
         }
-        console.log("[UserScript]load script: " + src);
+        //console.log("[UserScript]load script: " + src);
 
+        //try patch all web/dist/**.js
+        //because of a hash path is used for viewer.js 
         if (src.indexOf("web/dist/") >= 0 || src.indexOf("standaloneViewer") >= 0) {
             e.preventDefault();
             e.stopPropagation();
