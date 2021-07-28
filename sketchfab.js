@@ -250,6 +250,7 @@
             req.send('');
 
             var jstext = req.responseText;
+
             if (jstext.indexOf("drawImplementation:function(e){var t=e.getLastProgramApplied()") >= 0) {
                 console.log("inject1:" + src);
                 jstext = jstext.split("drawImplementation:function(e){var t=e.getLastProgramApplied()").join("drawImplementation:function(e){window.drawhook(this);var t=e.getLastProgramApplied()");
@@ -262,7 +263,11 @@
             } else if (jstext.indexOf("drawGeometry:function(t){") >= 0) {
                 console.log("inject4:" + src);
                 jstext = jstext.split("drawGeometry:function(t){").join("drawGeometry:function(t){window.drawhook(this._geometry);");
+            } else if (jstext.indexOf("drawImplementation:function(t){var r=f,e=t.getLastProgramApplied()") >= 0) {
+                console.log("inject5:" + src);
+                jstext = jstext.split("drawImplementation:function(t){var r=f,e=t.getLastProgramApplied()").join("drawImplementation:function(t){window.drawhook(this);var r=f,e=t.getLastProgramApplied()");
             }
+
 
             var obj = document.createElement('script');
             obj.type = "text/javascript";
@@ -270,6 +275,9 @@
             document.getElementsByTagName('head')[0].appendChild(obj);
 
             //console.log("[UserScript]Injection: viewer.js patched");
+            //if (jstext.indexOf("drawImplementation") >= 0) console.log("found  drawImplementation " + src);
+            //if (jstext.indexOf("drawGeometry") >= 0) console.log("found drawGeometry " + src);
+
         };
     }, true);
 })();
