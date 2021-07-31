@@ -219,10 +219,12 @@
             p.appendChild(btn);
         } else {
             console.log("[UserScript]try add btn later");
-            //setTimeout(addbtnfunc, 1000);
+            setTimeout(addbtnfunc, 1000);
         }
     }
-    setTimeout(addbtnfunc, 3000);
+
+
+    var regpattern = /(drawImplementation:\s*function\([^\(\{]*\{)[^\{\}]*getInstanceID/;
 
     window.allmodel = [];
     window.drawhook = function(obj) {
@@ -251,33 +253,25 @@
 
             var jstext = req.responseText;
 
-            if (jstext.indexOf("drawImplementation:function(e){var t=e.getLastProgramApplied()") >= 0) {
-                console.log("inject1:" + src);
-                jstext = jstext.split("drawImplementation:function(e){var t=e.getLastProgramApplied()").join("drawImplementation:function(e){window.drawhook(this);var t=e.getLastProgramApplied()");
-            } else if (jstext.indexOf("drawImplementation: function(state) {") >= 0) {
-                console.log("inject2:" + src);
-                jstext = jstext.split("drawImplementation: function(state) {").join("drawImplementation: function(state) { window.drawhook(this);");
-            } else if (jstext.indexOf("drawGeometry:function(t){var e=t.getLastProgramApplied()") >= 0) {
-                console.log("inject3:" + src);
-                jstext = jstext.split("drawGeometry:function(t){var e=t.getLastProgramApplied()").join("drawGeometry:function(t){window.drawhook(this._geometry);var e=t.getLastProgramApplied()");
-            } else if (jstext.indexOf("drawGeometry:function(t){") >= 0) {
-                console.log("inject4:" + src);
-                jstext = jstext.split("drawGeometry:function(t){").join("drawGeometry:function(t){window.drawhook(this._geometry);");
-            } else if (jstext.indexOf("drawImplementation:function(t){var r=f,e=t.getLastProgramApplied()") >= 0) {
-                console.log("inject5:" + src);
-                jstext = jstext.split("drawImplementation:function(t){var r=f,e=t.getLastProgramApplied()").join("drawImplementation:function(t){window.drawhook(this);var r=f,e=t.getLastProgramApplied()");
+            var ret = regpattern.exec(jstext);
+            if (ret) {
+                var index = ret.index + ret[1].length;
+                var head = jstext.slice(0, index);
+                var tail = jstext.slice(index);
+                jstext = head + "window.drawhook(this);" + tail;
+                console.log("[UserScript]Injection: patched " + src);
+                setTimeout(addbtnfunc, 3000);
             }
-
 
             var obj = document.createElement('script');
             obj.type = "text/javascript";
             obj.text = jstext;
             document.getElementsByTagName('head')[0].appendChild(obj);
 
-            //console.log("[UserScript]Injection: viewer.js patched");
             //if (jstext.indexOf("drawImplementation") >= 0) console.log("found  drawImplementation " + src);
             //if (jstext.indexOf("drawGeometry") >= 0) console.log("found drawGeometry " + src);
 
         };
     }, true);
 })();
+
