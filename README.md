@@ -1,5 +1,7 @@
 # !! OUT OF DATE !!
 
+Marked as unmaintained.
+
 ### sketchfab_download_userscipt  
 sketchfab download userscipt for Tampermonkey by Firefox only  
 
